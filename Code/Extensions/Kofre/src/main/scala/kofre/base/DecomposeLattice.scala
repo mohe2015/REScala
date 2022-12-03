@@ -4,7 +4,6 @@ import kofre.base.{Bottom, Lattice}
 import kofre.dotted.{Dotted, DottedDecompose}
 import kofre.time.Dots
 
-import scala.annotation.implicitNotFound
 import scala.compiletime.summonAll
 import scala.deriving.Mirror
 
@@ -12,7 +11,6 @@ import scala.deriving.Mirror
   * The only requirement is that merging the decomposed results produces the original state.
   * Requires a bottom to enable automatic decomposition of Product types
   */
-@implicitNotFound("Not a decompose lattice »${A}«")
 trait DecomposeLattice[A] extends Lattice[A] {
 
   /** computes delta without state */

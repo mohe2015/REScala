@@ -6,14 +6,12 @@ import kofre.datatypes.RGA
 import kofre.decompose.interfaces
 import kofre.time.{Dot, Dots}
 
-import scala.annotation.implicitNotFound
 import scala.compiletime.{erasedValue, summonAll, summonInline}
 import scala.deriving.Mirror
 
 /** DecomposableDotStore is the typeclass trait for dot stores,
   * data structures that are part of causal CRDTs and make use of dots to track time.
   */
-@implicitNotFound("Not a decompose lattice when in a context: »${A}«")
 trait DottedDecompose[A] extends DottedLattice[A], DecomposeLattice[Dotted[A]] {
   def contextbimap[B](to: Dotted[A] => Dotted[B], from: Dotted[B] => Dotted[A]): DottedDecompose[B] =
     new DottedDecompose[B] {

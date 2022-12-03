@@ -6,7 +6,6 @@ import kofre.time.Dots
 import kofre.decompose.containers.{AntiEntropyCRDT, DeltaBufferRDT}
 import kofre.dotted.Dotted
 
-import scala.annotation.implicitNotFound
 import scala.util.NotGiven
 
 /** The basic idea behind this machinery is to allow lattices of type L to be stored in a Container of type C.
@@ -16,34 +15,24 @@ import scala.util.NotGiven
   * No matter the concrete container, they should all offer the same API to the underlying lattice.
   */
 
-@implicitNotFound("Requires query permission »${L}«\nfrom »${C}")
 trait PermQuery[C, L]:
   def query(c: C): L
   def focus[M](q: L => M): PermQuery[C, M] = (c: C) => q(PermQuery.this.query(c))
-@implicitNotFound("Requires mutation permission.\nUnsure to modify »${L}«\nwithin »${C}«")
+
 trait PermMutate[C, L] extends PermQuery[C, L]:
   def mutate(c: C, delta: L): C
 
-@implicitNotFound(
-  "Requires a replica ID.\nWhich seems unavailable in »${C}«\nMissing a container?"
-)
 trait PermId[C]:
   def replicaId(c: C): Id
 class FixedId[C](id: Id) extends PermId[C]:
   override def replicaId(c: C): Id = id
-@implicitNotFound(
-  "Requires causal context permission.\nNo context in »${C}«\nMissing a container?"
-)
+
 trait PermCausal[C]:
   def context(c: C): Dots
-@implicitNotFound(
-  "Requires context mutation permission.\nUnsure how to extract context from »${C}«\nto modify »${L}«"
-)
+
 trait PermCausalMutate[C, L] extends PermCausal[C], PermQuery[C, L]:
   def mutateContext(container: C, withContext: Dotted[L]): C
-@implicitNotFound(
-  "Requires query, id, and mutation permission.\nUnsure how to extract them from »${C}«\nto modify »${L}«"
-)
+
 trait PermIdMutate[C, L] extends PermId[C], PermMutate[C, L]
 
 object PermQuery:
@@ -61,7 +50,6 @@ object PermIdMutate:
 /** Helper trait to state that container C contains lattices of type L.
   * This is used for better type inference
   */
-@implicitNotFound("Could not show that »${C}\ncontains ${L}")
 trait ArdtOpsContains[C, L]
 object ArdtOpsContains:
   given identityContains[L]: ArdtOpsContains[L, L]                                 = new {}

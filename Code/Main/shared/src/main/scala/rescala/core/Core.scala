@@ -2,7 +2,7 @@ package rescala.core
 
 import rescala.operator.RExceptions
 
-import scala.annotation.{implicitNotFound, nowarn}
+import scala.annotation.nowarn
 import scala.util.DynamicVariable
 
 trait Core {
@@ -256,7 +256,6 @@ trait Core {
   }
 
   /** Enables the creation of other reactives */
-  @implicitNotFound(msg = "Could not find capability to create reactives. Maybe a missing import?")
   final class CreationTicket(val scope: ScopeSearch, val rename: ReName) {
 
     private[rescala] def create[V, T <: Derived](
@@ -334,7 +333,6 @@ trait Core {
   /** Scheduler that defines the basic data-types available to the user and creates turns for propagation handling.
     * Note: This should NOT extend [[DynamicScope]], but did so in the past and there are too many tests that assume so ...
     */
-  @implicitNotFound(msg = "Could not find an implicit scheduler. Did you forget an import?")
   trait Scheduler extends DynamicScope {
     final def forceNewTransaction[R](initialWrites: ReSource*)(admissionPhase: AdmissionTicket => R): R = {
       forceNewTransaction(initialWrites.toSet, admissionPhase)
