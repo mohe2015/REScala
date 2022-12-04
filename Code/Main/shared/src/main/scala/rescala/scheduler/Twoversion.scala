@@ -6,7 +6,7 @@ import scala.annotation.nowarn
 import scala.collection.mutable.ListBuffer
 import scala.util.control.NonFatal
 
-case class Token()
+class Token()
 
 trait Twoversion extends Core {
 
@@ -74,7 +74,7 @@ trait Twoversion extends Core {
       *   - not yet implemented
       */
     override def forceNewTransaction[R](initialWrites: Set[ReSource], admissionPhase: AdmissionTicket => R): R = {
-      val tx = makeTransaction(_currentInitializer.value)
+      val tx = makeTransaction(_currentTransaction.value)
 
       val result =
         try {
@@ -145,7 +145,7 @@ trait Twoversion extends Core {
     */
   trait TwoVersionTransactionImpl extends TwoVersionTransaction {
 
-    val token: Token = Token()
+    val token: Token = new Token()
 
     val toCommit  = ListBuffer[ReSource]()
     val observers = ListBuffer[Observation]()
